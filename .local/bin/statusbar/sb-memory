@@ -9,4 +9,6 @@ case $BLOCK_BUTTON in
 	6) "$TERMINAL" -e "$EDITOR" "$0" ;;
 esac
 
-free --mebi | sed -n '2{p;q}' | awk '{printf ("🧠%2.2fGiB/%2.2fGiB\n", ( $3 / 1024), ($2 / 1024))}'
+MUSED="$(top -b -n 1 | grep -o 'Real.*' | sed 's/Real: //' | sed 's/\/.*//')"
+printf "$MUSED" | egrep "[0-9]{4}" > /dev/null && FUSED="$(printf "$MUSED" | cut -c -2 | sed 's/./.&/2')GiB" || FUSED=$MUSED
+printf "🧠$FUSED/(free | awk '/^Mem:/ {print $2}')\n"
